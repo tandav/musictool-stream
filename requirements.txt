@@ -1,0 +1,5 @@
+musictool
+numpy
+opencv-python
+pytest
+pytest-cov
