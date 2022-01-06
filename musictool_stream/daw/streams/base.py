@@ -2,11 +2,11 @@ import abc
 from contextlib import AbstractContextManager
 
 import numpy as np
-
 from musictool import config
+
 from musictool_stream.daw.midi.notesound import State
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
-from musictool.util.signal import normalize as normalize_
+from musictool_stream.util.signal import normalize as normalize_
 
 
 class Stream(AbstractContextManager):

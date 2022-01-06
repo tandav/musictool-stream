@@ -4,11 +4,11 @@ from pathlib import Path
 from typing import get_args
 
 import mido
-
 from musictool import config
+from musictool.util import color as colorutil
+
 from musictool_stream.daw.midi.notesound import NoteSound
 from musictool_stream.daw.vst.base import VST
-from musictool.util import color as colorutil
 
 PathLike = str | Path
 

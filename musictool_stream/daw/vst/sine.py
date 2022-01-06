@@ -1,7 +1,7 @@
 import numpy as np
+from musictool.note import SpecificNote
 
 from musictool_stream.daw.vst.base import VST
-from musictool.note import SpecificNote
 
 
 class Sine(VST):

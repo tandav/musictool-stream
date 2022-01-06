@@ -3,7 +3,6 @@ import functools
 import heapq
 
 import mido
-
 from musictool.note import SpecificNote
 
 

@@ -3,7 +3,6 @@ import threading
 
 import cv2
 import numpy as np
-
 from musictool import config
 from musictool.util import image as imageutil
 

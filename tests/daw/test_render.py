@@ -3,8 +3,8 @@ import sys
 
 import numpy as np
 import pytest
-
 from musictool.chord import SpecificChord
+
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
 from musictool_stream.daw.streams.bytes import Bytes
 from musictool_stream.daw.vst.adsr import ADSR

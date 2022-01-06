@@ -1,7 +1,7 @@
 import numpy as np
 
 from musictool_stream.daw.streams.base import Stream
-from musictool.util.signal import float32_to_int16
+from musictool_stream.util.signal import float32_to_int16
 
 
 class PCM16File(Stream):

@@ -2,10 +2,10 @@ from enum import Enum
 from enum import auto
 
 import numpy as np
-
 from musictool import config
-from musictool_stream.daw.vst.base import VST
 from musictool.note import SpecificNote
+
+from musictool_stream.daw.vst.base import VST
 
 
 class State(Enum):

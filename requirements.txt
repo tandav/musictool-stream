@@ -3,3 +3,10 @@ numpy
 opencv-python
 pytest
 pytest-cov
+no_init
+isort
+flake8
+autopep8
+autoflake
+unify
+force_absolute_imports

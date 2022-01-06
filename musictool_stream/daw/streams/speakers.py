@@ -1,6 +1,6 @@
 import numpy as np
-
 from musictool import config
+
 from musictool_stream.daw.streams.base import Stream
 
 

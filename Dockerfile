@@ -11,8 +11,8 @@ RUN pip install numpy opencv-python mido joblib pipe21 && apt update && apt inst
 RUN pip install requests
 RUN pip install Pillow
 
-RUN mkdir -p /app/musictool && mkdir -p /app/static && touch /app/credentials.py
+RUN mkdir -p /app/musictool_stream && mkdir -p /app/static && touch /app/credentials.py
 WORKDIR /app
 COPY static /app/static
-COPY musictool /app/musictool
-CMD ["python", "-m", "musictool.daw", "video"]
+COPY musictool_stream /app/musictool_stream
+CMD ["python", "-m", "musictool_stream.daw", "video"]

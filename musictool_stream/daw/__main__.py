@@ -6,9 +6,14 @@ from collections import deque
 
 # import joblib
 import mido
-
 from musictool import config
 from musictool import voice_leading
+from musictool.note import SpecificNote
+from musictool.notes import note_range
+from musictool.rhythm import Rhythm
+from musictool.scale import Scale
+from musictool.util.text import ago
+
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
 from musictool_stream.daw.streams.pcmfile import PCM16File
 from musictool_stream.daw.streams.speakers import Speakers
@@ -18,11 +23,6 @@ from musictool_stream.daw.vst.adsr import ADSR
 from musictool_stream.daw.vst.organ import Organ
 from musictool_stream.daw.vst.sampler import Sampler
 from musictool_stream.daw.vst.sine import Sine8
-from musictool.note import SpecificNote
-from musictool.notes import note_range
-from musictool.rhythm import Rhythm
-from musictool.scale import Scale
-from musictool.util.text import ago
 
 # memory = joblib.Memory('static/cache', verbose=0)
 
