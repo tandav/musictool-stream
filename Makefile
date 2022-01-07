@@ -24,3 +24,11 @@ build_push_stream: messages
 	#docker buildx build --platform linux/arm64/v8,linux/amd64 --tag tandav/musictool-stream -f --push .
 	docker build --tag tandav/musictool-stream .
 	docker push tandav/musictool-stream
+
+.PHONY: upload_creds_makefile
+upload_creds_makefile:
+	scp credentials.py Makefile cn:~/musictool
+
+.PHONY: docker_stream
+docker_stream:
+	docker run --pull=always --rm -it -v $$PWD/credentials.py:/app/credentials.py tandav/musictool-stream
