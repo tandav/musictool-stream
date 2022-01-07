@@ -9,7 +9,7 @@ import mido
 from musictool import config
 from musictool import voice_leading
 from musictool.note import SpecificNote
-from musictool.notes import note_range
+from musictool.noteset import note_range
 from musictool.rhythm import Rhythm
 from musictool.scale import Scale
 from musictool.util.text import ago
