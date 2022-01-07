@@ -1,14 +1,20 @@
-python = python3.10
+.PHONY: stream
+stream:
+	python -m musictool_stream.daw video
+
+.PHONY: test_video
+test_video:
+	python -m musictool_stream.daw video_test
 
 .PHONY: lint
 lint:
-	$(python) -m no_init musictool_stream tests
-	$(python) -m force_absolute_imports musictool_stream tests
-	$(python) -m isort --force-single-line-imports musictool_stream tests
-	$(python) -m autoflake --recursive --in-place musictool_stream tests
-	$(python) -m autopep8 --in-place --recursive --aggressive --ignore=E221,E401,E402,E501,W503,E701,E704,E721,E741,I100,I201,W504 --exclude=musictool_stream/util/wavfile.py musictool_stream tests
-	$(python) -m unify --recursive --in-place musictool_stream tests
-	$(python) -m flake8 --ignore=E221,E501,W503,E701,E704,E741,I100,I201,W504 --exclude=musictool_stream/util/wavfile.py musictool_stream tests
+	python -m no_init musictool_stream tests
+	python -m force_absolute_imports musictool_stream tests
+	python -m isort --force-single-line-imports musictool_stream tests
+	python -m autoflake --recursive --in-place musictool_stream tests
+	python -m autopep8 --in-place --recursive --aggressive --ignore=E221,E401,E402,E501,W503,E701,E704,E721,E741,I100,I201,W504 --exclude=musictool_stream/util/wavfile.py musictool_stream tests
+	python -m unify --recursive --in-place musictool_stream tests
+	python -m flake8 --ignore=E221,E501,W503,E701,E704,E741,I100,I201,W504 --exclude=musictool_stream/util/wavfile.py musictool_stream tests
 
 .PHONY: messages
 messages:
@@ -16,7 +22,7 @@ messages:
 
 .PHONY: test
 test:
-	$(python) -m pytest -vv --cov=musictool tests
+	python -m pytest -vv --cov=musictool tests
 
 .PHONY: build_push_stream
 build_push_stream: messages
@@ -32,3 +38,11 @@ upload_creds_makefile:
 .PHONY: docker_stream
 docker_stream:
 	docker run --pull=always --rm -it -v $$PWD/credentials.py:/app/credentials.py tandav/musictool-stream
+
+.PHONY: daw
+daw:
+	python -m musictool_stream.daw
+
+.PHONY:  file
+file:
+	python -m musictool_stream.daw video_file 4
