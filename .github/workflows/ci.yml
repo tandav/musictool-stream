@@ -59,7 +59,7 @@ jobs:
         run: docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker images
-        run: make build_push_stream
+        run: make build_push
 
       - name: ls2
         run: |

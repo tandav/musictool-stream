@@ -1,3 +1,7 @@
+.PHONY: stream_docker
+stream_docker:
+	docker run --pull=always --rm -it -v $$PWD/credentials.py:/app/credentials.py tandav/musictool-stream
+
 .PHONY: stream
 stream:
 	python -m musictool_stream.daw video
@@ -24,8 +28,13 @@ messages:
 test:
 	python -m pytest -vv --cov=musictool tests
 
-.PHONY: build_push_stream
-build_push_stream: messages
+.PHONY: build_push_base
+build_push_base:
+	docker build --tag tandav/musictool-stream-base --file docker/base .
+	docker push tandav/musictool-stream-base
+
+.PHONY: build_push
+build_push: messages
 	make messages
 	#docker buildx build --platform linux/arm64/v8,linux/amd64 --tag tandav/musictool-stream -f --push .
 	docker build --tag tandav/musictool-stream .
@@ -34,10 +43,6 @@ build_push_stream: messages
 .PHONY: upload_creds_makefile
 upload_creds_makefile:
 	scp credentials.py Makefile cn:~/musictool
-
-.PHONY: docker_stream
-docker_stream:
-	docker run --pull=always --rm -it -v $$PWD/credentials.py:/app/credentials.py tandav/musictool-stream
 
 .PHONY: daw
 daw:
