@@ -8,14 +8,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: tandav/musictool-stream-base
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: '3.10'
-
-      - name: install ffmpeg
-        run: sudo apt update && sudo apt install --yes ffmpeg libvips
 
       - name: install python dependencies
         run: python3 -m pip install -r requirements-dev.txt
