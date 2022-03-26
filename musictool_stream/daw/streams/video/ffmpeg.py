@@ -1,6 +1,6 @@
 import subprocess
 
-from musictool import config
+from musictool_stream import config
 
 
 def make_process(output):
@@ -66,7 +66,8 @@ def make_process(output):
         # '-tag:v', 'hvc1', '-profile:v', 'main10',
         '-b:a', config.audio_bitrate,
         # '-b:v', config.video_bitrate,
-        '-deinterlace',
+        # '-deinterlace',
+        '-filter:v', 'yadif',
         # '-r', str(config.fps),
 
         '-r', str(config.fps),  # output framerate

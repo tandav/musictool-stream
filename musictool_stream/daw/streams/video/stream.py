@@ -5,8 +5,8 @@ import time
 from pathlib import Path
 
 import numpy as np
-from musictool import config
 
+from musictool_stream import config
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
 from musictool_stream.daw.streams.base import Stream
 from musictool_stream.daw.streams.video import ffmpeg
@@ -153,10 +153,10 @@ class Video(Stream):
         seconds = len_data / config.sample_rate
         b = float32_to_int16(data).tobytes()
 
-        real_seconds = time.time() - self.t_start
+        # real_seconds = time.time() - self.t_start
 
-        if real_seconds < self.audio_seconds_written:
-            time.sleep(0.9 * (self.audio_seconds_written - real_seconds))
+        # if real_seconds < self.audio_seconds_written:
+        #     time.sleep(0.9 * (self.audio_seconds_written - real_seconds))
 
         self.q_audio.put(b, block=True)
         # self.q_audio.append(b)

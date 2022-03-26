@@ -4,9 +4,10 @@ from pathlib import Path
 from typing import get_args
 
 import mido
-from musictool import config
+from musictool.config import scale_colors
 from musictool.util import color as colorutil
 
+from musictool_stream import config
 from musictool_stream.daw.midi.notesound import NoteSound
 from musictool_stream.daw.vst.base import VST
 
@@ -74,7 +75,10 @@ class ParsedMidi:
                         trackname=trackname,
                     ))
                 elif message.type == 'marker' and meta is not None:
-                    color = meta['scale'].note_colors[message.text]  # chord root
+                    # color = meta['scales']
+                    # self.note_colors[note] = hex_to_rgb(config.scale_colors[scale])
+                    # color = meta['scale'].note_colors[message.text]  # chord root
+                    color = colorutil.hex_to_rgb(scale_colors[meta['scale'].name])
                 elif message.type == 'track_name':
                     trackname = message.name
             # rounded = self.round_ticks_to_bar(ticks, ticks_per_bar)

@@ -29,6 +29,10 @@ class PipeWriter(Thread):
                     # except IndexError:
                     pass
                 else:
+                    # try:
+                    #     pipe.write(b)
+                    # except BrokenPipeError:
+                    #     raise SystemExit(1)
                     pipe.write(b)
                     self.q.task_done()
                 # print(json.dumps({'timestamp': time.monotonic(), 'writer': self.pipe, 'event': 'write_stop', 'qsize': self.q.qsize()}), file=self.log)

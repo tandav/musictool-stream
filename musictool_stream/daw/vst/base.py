@@ -1,9 +1,9 @@
 import abc
 
 import numpy as np
-from musictool import config
 from musictool.note import SpecificNote
 
+from musictool_stream import config
 from musictool_stream.daw.vst.adsr import ADSR
 
 

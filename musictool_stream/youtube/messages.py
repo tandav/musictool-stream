@@ -1,11 +1,12 @@
 import functools
-import random
 import time
 from collections import deque
 from threading import Event
 from threading import Thread
 
-from musictool import config
+from musictool.config import chromatic_notes
+
+from musictool_stream import config
 
 API_REQUESTS_QUOTA_PER_DAY = 10_000
 SECONDS_IN_DAY = 60 * 60 * 24
@@ -22,28 +23,29 @@ def parse_chords(message_text: str):
         return
     if len(chords) != config.bars_per_screen:
         return
-    if any(c not in config.chromatic_notes for c in chords):
+    if any(c not in chromatic_notes for c in chords):
         return
     return chords
 
 
 @functools.cache
 def find_progression(chords: str):
-    options = config.progressions_search_cache[chords]
+    # options = config.progressions_search_cache[chords]
     # options = [
     #     p for p in config.progressions
     #     if all(a == b.root for a, b in zip(chords, p[0]))
     # ]
-    if len(options) == 0:
-        return
-    return random.choice(options)
+    # if len(options) == 0:
+    #     return
+    # return random.choice(options)
+    raise NotImplementedError('need to change')
 
 
 class YoutubeMessages(Thread):
     def __init__(self):
         super().__init__()
         import credentials
-        from musictool.youtube import api
+        from musictool_stream.youtube import api
         self.api = api
         self.api_key = credentials.api_key
         self.video_id = credentials.video_id

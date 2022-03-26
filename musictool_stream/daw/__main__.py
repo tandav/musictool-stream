@@ -1,19 +1,18 @@
 import datetime
 import itertools
 import random
+import subprocess
 import sys
 from collections import deque
 
 # import joblib
 import mido
-from musictool import config
-from musictool import voice_leading
 from musictool.note import SpecificNote
-from musictool.noteset import note_range
+from musictool.noteset import NoteRange
 from musictool.rhythm import Rhythm
 from musictool.scale import Scale
-from musictool.util.text import ago
 
+from musictool_stream import config
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
 from musictool_stream.daw.streams.pcmfile import PCM16File
 from musictool_stream.daw.streams.speakers import Speakers
@@ -23,6 +22,8 @@ from musictool_stream.daw.vst.adsr import ADSR
 from musictool_stream.daw.vst.organ import Organ
 from musictool_stream.daw.vst.sampler import Sampler
 from musictool_stream.daw.vst.sine import Sine8
+from musictool_stream.util import music
+from musictool_stream.util.text import ago
 
 # memory = joblib.Memory('static/cache', verbose=0)
 
@@ -35,20 +36,20 @@ def make_rhythms():
 
 
 # @memory.cache
-def make_progressions(note_range_, scale=Scale.from_name('C', 'phrygian')):
+def make_progressions(note_range_: NoteRange, scale=Scale.from_name('C', 'phrygian')):
     progressions = []
     scales = [Scale.from_name(note, name) for note, name in scale.note_scales.items()]
     for scale in scales:
-        for dist, p in voice_leading.make_progressions(scale, note_range_):
-            P = p, dist, scale
-            progressions.append(P)
-            config.progressions_search_cache[''.join(c.root.name for c in p)].append(P)
+        for p in music.make_progressions(NoteRange(config.note_range.start, config.note_range.stop, noteset=scale)):
+            # P = p, scale
+            progressions.append((p, scale))
+            # config.progressions_search_cache[''.join(c.root.name for c in p)].append(P)
     return progressions
 
 
 def render_loop(stream, rhythms, progression, bass, synth, drum_midi, drumrack, messages):
 
-    progression, dist, scale = progression
+    progression, scale = progression
     # rhythm = random.choice(rhythms)
 
     bass_midi = []
@@ -104,7 +105,6 @@ def render_loop(stream, rhythms, progression, bass, synth, drum_midi, drumrack, 
     timestamp = int(timestamp)
     ago_ = ago(datetime.datetime.now().timestamp() - timestamp)
     sha, message = rest.split(maxsplit=1)
-
     stream.render_chunked(ParsedMidi.vstack(
         [drum_midi, bass_midi, chord_midi],
         [drumrack, bass, synth],
@@ -126,7 +126,7 @@ def render_loop(stream, rhythms, progression, bass, synth, drum_midi, drumrack, 
             'tuning': f'tuning{config.tuning}Hz',
             'root_scale': f'root scale: {scale.root.name} {scale.name}',
             'progression': progression,
-            'dist': f'dist{dist}',
+            'dist': f'dist{progression.distance}',
             'scale': scale,
         },
     ))
@@ -189,11 +189,12 @@ def main() -> int:
     # config.note_range = note_range(SpecificNote('C', 3), SpecificNote('G', 5))  # bass !
     # config.note_range = note_range(SpecificNote('C', 3), SpecificNote('C', 6))
     # config.note_range = note_range(SpecificNote('C', 4), SpecificNote('C', 7))
-    config.note_range = note_range(SpecificNote('C', 5), SpecificNote('C', 8))
+
+    config.note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8))
     rhythms = make_rhythms()
     config.progressions = make_progressions(config.note_range, scale=Scale.from_name('C', 'major'))
     config.progressions_queue = deque()
-    config.note_range = note_range(config.note_range[0] + -24, config.note_range[-1])
+    config.note_range = NoteRange(config.note_range[0] + -24, config.note_range[-1])
 
     # n = len(notes_rhythms[0])
 
@@ -221,32 +222,42 @@ def main() -> int:
     # with streams.WavFile(config.wav_output_file, dtype='int16') as stream:
     # with streams.PCM16File(config.audio_pipe) as stream:
     # with streams.Speakers() as stream:
-    with output() as stream:
-        # for _ in range(4): render.chunked(stream, midi)
-        # for _ in range(4): render.single(stream, midi)
-        # for _ in range(1): render.chunked(stream, midi)
-        # for _ in range(4): render.single(stream, ParsedMidi.from_file('weird.mid', vst=synth))
-        #     for _ in range(4): render.chunked(stream, ParsedMidi.from_file('dots.mid', vst=synth))
 
-        # midi.rhythm_to_midi(r, Path.home() / f"Desktop/midi/prog.mid",  progression=p)
+    # for _ in range(4): render.chunked(stream, midi)
+    # for _ in range(4): render.single(stream, midi)
+    # for _ in range(1): render.chunked(stream, midi)
+    # for _ in range(4): render.single(stream, ParsedMidi.from_file('weird.mid', vst=synth))
+    #     for _ in range(4): render.chunked(stream, ParsedMidi.from_file('dots.mid', vst=synth))
+    # midi.rhythm_to_midi(r, Path.home() / f"Desktop/midi/prog.mid",  progression=p)
+    # for _ in range(1):
+    #     i = random.randrange(0, n)
+    #     for _ in range(1):
+    #         midi = ParsedMidi.vstack([drum_midi, C[i]], vst=(vst.Sampler(), bass))
+    #         render.chunked(stream, midi)
+    #     for _ in range(3):
+    #         midi = ParsedMidi.vstack([drum_midi, random.choice(notes_rhythms)[i]], vst=(vst.Sampler(), bass))
+    #         render.chunked(stream, midi)
 
-        if is_test:
+    if is_test:
+        with output() as stream:
             for _ in range(n_loops):
                 render_loop(stream, rhythms, random.choice(config.progressions), bass, synth, drum_midi, drumrack, messages)
-        else:
-            while True:
-                if len(config.progressions_queue) < 4:
-                    config.progressions_queue.append(random.choice(config.progressions))
-                render_loop(stream, rhythms, config.progressions_queue.popleft(), bass, synth, drum_midi, drumrack, messages)
+        return 0
 
-        # for _ in range(1):
-        #     i = random.randrange(0, n)
-        #     for _ in range(1):
-        #         midi = ParsedMidi.vstack([drum_midi, C[i]], vst=(vst.Sampler(), bass))
-        #         render.chunked(stream, midi)
-        #     for _ in range(3):
-        #         midi = ParsedMidi.vstack([drum_midi, random.choice(notes_rhythms)[i]], vst=(vst.Sampler(), bass))
-        #         render.chunked(stream, midi)
+    while True:
+        try:
+            with output() as stream:
+                # out, err = stream.ffmpeg.communicate(timeout=0.01)
+                # out, err = stream.ffmpeg.communicate(timeout=0.5)
+                # out, err = stream.ffmpeg.communicate()
+                # print(out)
+                # print(err)
+                while True:
+                    if len(config.progressions_queue) < 4:
+                        config.progressions_queue.append(random.choice(config.progressions))
+                    render_loop(stream, rhythms, config.progressions_queue.popleft(), bass, synth, drum_midi, drumrack, messages)
+        except subprocess.TimeoutExpired:
+            print('need to restart')
 
     print('exit main')
     return 0

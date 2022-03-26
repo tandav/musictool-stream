@@ -26,7 +26,7 @@ messages:
 
 .PHONY: test
 test:
-	python -m pytest -vv --cov=musictool tests
+	python -m pytest tests
 
 .PHONY: build_push_base
 build_push_base:
@@ -49,5 +49,9 @@ daw:
 	python -m musictool_stream.daw
 
 .PHONY:  file
-file:
+file: ## render 4 seconds to a file for test
 	python -m musictool_stream.daw video_file 4
+
+.PHONY: help
+help: ## Display this help
+	@grep -E '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "%-30s %s\n", $$1, $$2}'

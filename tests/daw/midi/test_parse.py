@@ -1,7 +1,7 @@
 import mido
 import pytest
-from musictool import config
 
+from musictool_stream import config
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
 
 

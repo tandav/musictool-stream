@@ -1,4 +1,4 @@
-FROM tandav/musictool-stream
+FROM tandav/musictool-stream-base
 
 RUN mkdir -p /app/musictool_stream && mkdir -p /app/static && touch /app/credentials.py
 WORKDIR /app

@@ -1,8 +1,8 @@
 import io
 
 import numpy as np
-from musictool import config
 
+from musictool_stream import config
 from musictool_stream.daw.streams.base import Stream
 from musictool_stream.util import wavfile
 from musictool_stream.util.signal import float32_to_int16
