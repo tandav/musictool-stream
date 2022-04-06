@@ -263,7 +263,7 @@ class ParsedMidi:
                     # m = message.copy()
                     # m.time =
                     track.append(message)
-            track.append(mido.MetaMessage(type='text', text='end_of_bar', time=ticks_per_bar - ticks))
+            track.append(mido.MetaMessage(type='marker', text='end_of_bar', time=ticks_per_bar - ticks))
         # assert util.all_equal(time_signatures.values())
 
         assert len(ticks_per_beat_set) == 1

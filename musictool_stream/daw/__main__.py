@@ -36,7 +36,7 @@ def make_rhythms():
 
 
 # @memory.cache
-def make_progressions(note_range_: NoteRange, scale=Scale.from_name('C', 'phrygian')):
+def make_progressions(scale=Scale.from_name('C', 'phrygian')):
     progressions = []
     scales = [Scale.from_name(note, name) for note, name in scale.note_scales.items()]
     for scale in scales:
@@ -192,7 +192,7 @@ def main() -> int:
 
     config.note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8))
     rhythms = make_rhythms()
-    config.progressions = make_progressions(config.note_range, scale=Scale.from_name('C', 'major'))
+    config.progressions = make_progressions(scale=Scale.from_name('C', 'major'))
     config.progressions_queue = deque()
     config.note_range = NoteRange(config.note_range[0] + -24, config.note_range[-1])
 
