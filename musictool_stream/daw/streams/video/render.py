@@ -92,9 +92,8 @@ class VideoRender(threading.Thread):
         chord_px_int = int(config.chord_px)
         for y, chord in zip(range(0, config.frame_height, chord_px_int), track.meta['progression']):
             # background_color = track.meta['scale'].note_colors[chord.root]
-            background_color = colorutil.hex_to_rgb(scale_colors[track.meta['scale'].note_scales[chord.root]])
+            background_color = colorutil.hex_to_rgb(scale_colors['major'])
             cv2.rectangle(chord_rects, pt1=(0, y), pt2=(config.frame_width, y + chord_px_int), color=background_color, thickness=cv2.FILLED)
-            cv2.putText(chord_rects, f"{chord.root.name} {chord.abstract.name} | {track.meta['scale'].note_scales[chord.root]}", (imageutil.rel_to_abs_w(0.82), (y + imageutil.rel_to_abs_h(0.01))), font, fontScale=1, color=(210, 210, 210), thickness=2, lineType=cv2.LINE_AA, bottomLeftOrigin=True)
 
         self.bg = imageutil.overlay_image(bg, chord_rects, alpha=0.3)
 
@@ -237,40 +236,39 @@ class VideoRender(threading.Thread):
         im = imageutil.overlay_image(bg, bg_bright, alpha=1.0)
         im = cv2.flip(im, 0)
         for note in chord.notes_ascending:
-            cv2.putText(im, repr(note), (note_to_x[note], config.frame_height - (chord_start_px + imageutil.rel_to_abs_h(0.007))), font, fontScale=0.75, color=BLACK_PALE, thickness=1, lineType=cv2.LINE_AA)
+            cv2.putText(im, repr(note), (note_to_x[note], config.frame_height - (chord_start_px + imageutil.rel_to_abs_h(0.007))), font, fontScale=0.5, color=BLACK_PALE, thickness=1, lineType=cv2.LINE_AA)
 
         for note in chord.root_specific:
-            cv2.putText(im, 'r', (note_to_x[note], config.frame_height - (chord_start_px + imageutil.rel_to_abs_h(0.03))), font, fontScale=0.75, color=BLACK_PALE, thickness=1, lineType=cv2.LINE_AA)
+            cv2.putText(im, 'r', (note_to_x[note], config.frame_height - (chord_start_px + imageutil.rel_to_abs_h(0.03))), font, fontScale=0.5, color=BLACK_PALE, thickness=1, lineType=cv2.LINE_AA)
 
         # print('kek')
         # for _ in range(1):
         # cv2.rectangle(im, pt1=util.random_xy(), pt2=util.random_xy(), color=util.random_color(), thickness=1)
         # cv2.rectangle(im, pt1=util.random_xy(), pt2=util.random_xy(), color=(0,0,0), thickness=1)
 
-        cv2.putText(im, track.meta['message'], imageutil.rel_to_abs(0, 0.03), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, track.meta['bassline'], imageutil.rel_to_abs(0, 0.07), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, track.meta['rhythm_score'], imageutil.rel_to_abs(0, 0.1), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, track.meta['bass_decay'], imageutil.rel_to_abs(0, 0.13), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, track.meta['tuning'], imageutil.rel_to_abs(0, 0.16), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, track.meta['dist'], imageutil.rel_to_abs(0, 0.19), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, track.meta['root_scale'], imageutil.rel_to_abs(0, 0.22), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'sys.platform {sys.platform}', imageutil.rel_to_abs(0, 0.25), font, fontScale=1, color=(WHITE_BRIGHT), thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'bpm {config.beats_per_minute}', imageutil.rel_to_abs(0, 0.28), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'sample_rate {config.sample_rate}', imageutil.rel_to_abs(0, 0.31), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'fps {config.fps}', imageutil.rel_to_abs(0, 0.34), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'draw_threads {config.draw_threads}', imageutil.rel_to_abs(0, 0.37), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'chunk_size {config.chunk_size}', imageutil.rel_to_abs(0, 0.4), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'GOP {config.gop}', imageutil.rel_to_abs(0, 0.43), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'keyframe_seconds {config.keyframe_seconds}', imageutil.rel_to_abs(0, 0.46), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, f'quality {config.frame_height}p', imageutil.rel_to_abs(0, 0.49), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
+        cv2.putText(im, track.meta['message'], imageutil.rel_to_abs(0, 0.03), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, track.meta['bassline'], imageutil.rel_to_abs(0, 0.07), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, track.meta['rhythm_score'], imageutil.rel_to_abs(0, 0.1), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, track.meta['bass_decay'], imageutil.rel_to_abs(0, 0.13), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, track.meta['tuning'], imageutil.rel_to_abs(0, 0.16), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, track.meta['dist'], imageutil.rel_to_abs(0, 0.19), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, track.meta['root_scale'], imageutil.rel_to_abs(0, 0.22), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'sys.platform {sys.platform}', imageutil.rel_to_abs(0, 0.25), font, fontScale=0.5, color=(WHITE_BRIGHT), thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'bpm {config.beats_per_minute}', imageutil.rel_to_abs(0, 0.28), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'sample_rate {config.sample_rate}', imageutil.rel_to_abs(0, 0.31), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'fps {config.fps}', imageutil.rel_to_abs(0, 0.34), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'draw_threads {config.draw_threads}', imageutil.rel_to_abs(0, 0.37), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'chunk_size {config.chunk_size}', imageutil.rel_to_abs(0, 0.4), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'GOP {config.gop}', imageutil.rel_to_abs(0, 0.43), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'keyframe_seconds {config.keyframe_seconds}', imageutil.rel_to_abs(0, 0.46), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, f'quality {config.frame_height}p', imageutil.rel_to_abs(0, 0.49), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
 
-        cv2.putText(im, f"{chord.root.name} {chord.abstract.name} | {track.meta['scale'].note_scales[chord.root]}", (imageutil.rel_to_abs_w(0.82), config.frame_height - (chord_start_px + imageutil.rel_to_abs_h(0.01))), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
 
         if not track.meta['muted']['closed_hat']:
             for _ in range(2):
-                cv2.putText(im, '*', imageutil.random_xy(), font, fontScale=1, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
-        cv2.putText(im, 'tandav.me', imageutil.rel_to_abs(0.8, 0.07), font, fontScale=2, color=BLACK_PALE, thickness=2, lineType=cv2.LINE_AA)
-        cv2.putText(im, 'tandav.me', imageutil.rel_to_abs(0.802, 0.072), font, fontScale=2, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
+                cv2.putText(im, '*', imageutil.random_xy(), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
+        cv2.putText(im, 'tandav.me', imageutil.rel_to_abs(0.8, 0.07), font, fontScale=1, color=BLACK_PALE, thickness=2, lineType=cv2.LINE_AA)
+        cv2.putText(im, 'tandav.me', imageutil.rel_to_abs(0.802, 0.072), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
 
         h = imageutil.rel_to_abs_h(0.5)
 
@@ -279,10 +277,10 @@ class VideoRender(threading.Thread):
             profileImage = message['profileImage']
             im[ph:ph + profileImage.shape[0], pw:pw + profileImage.shape[1]] = profileImage
             h += 30
-            cv2.putText(im, message['displayName'], (profileImage.shape[0], h), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
+            cv2.putText(im, message['displayName'], (profileImage.shape[0], h), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
             # h += 0.03
             h += imageutil.rel_to_abs_h(0.03)
-            cv2.putText(im, message['text'], (profileImage.shape[0], h), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
+            cv2.putText(im, message['text'], (profileImage.shape[0], h), font, fontScale=0.5, color=WHITE_BRIGHT, thickness=1, lineType=cv2.LINE_AA)
             # h += 0.04
             h += profileImage.shape[0] // 2
 

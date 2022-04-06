@@ -49,14 +49,14 @@ video_pipe = 'video.fifo'
 # fps = 50
 # fps = 44
 # fps = 40
-# fps = 30
+fps = 30
 # fps = 55
-fps = 60
+# fps = 60
 
 # frame_width, frame_height = 2560, 1440
-frame_width, frame_height = 1920, 1080  # 1080p, recommended bitrate 4.5M
+# frame_width, frame_height = 1920, 1080  # 1080p, recommended bitrate 4.5M
 # frame_width, frame_height = 1280, 720  # 720p
-# frame_width, frame_height = 854, 480  # 480p
+frame_width, frame_height = 854, 480  # 480p
 # frame_width, frame_height = 640, 360 # 360p
 # frame_width, frame_height = 426, 240  # 240p
 video_bitrate = '500k'
@@ -110,3 +110,5 @@ ui_thread = None
 
 # MIDI_UI_FILE = 'static/midi/vespers-04.mid'
 # MIDI_UI_FILE = 'static/midi/vivaldi-winter.mid'
+
+n_notes = 3

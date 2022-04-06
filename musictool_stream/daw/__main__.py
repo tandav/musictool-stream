@@ -11,6 +11,8 @@ from musictool.note import SpecificNote
 from musictool.noteset import NoteRange
 from musictool.rhythm import Rhythm
 from musictool.scale import Scale
+from musictool.progression import Progression
+from musictool.chord import SpecificChord
 
 from musictool_stream import config
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
@@ -27,6 +29,13 @@ from musictool_stream.util.text import ago
 
 # memory = joblib.Memory('static/cache', verbose=0)
 
+def random_progression():
+    return Progression((
+        SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+        SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+        SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+        SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+    ))
 
 # @memory.cache
 def make_rhythms():
@@ -160,7 +169,7 @@ def main() -> int:
             n_loops = 2
         elif sys.argv[1] == 'video_file':
             output = Video
-            config.OUTPUT_VIDEO = '/tmp/output.flv'
+            config.OUTPUT_VIDEO = f"{'-'.join(map(str, random_progression()))}.mp4"
             is_test = True
             n_loops = int(sys.argv[2]) if len(sys.argv) == 3 else 4
         elif sys.argv[1] == 'video':
@@ -192,7 +201,7 @@ def main() -> int:
 
     config.note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8))
     rhythms = make_rhythms()
-    config.progressions = make_progressions(scale=Scale.from_name('C', 'major'))
+    # config.progressions = make_progressions(scale=Scale.from_name('C', 'major'))
     config.progressions_queue = deque()
     config.note_range = NoteRange(config.note_range[0] + -24, config.note_range[-1])
 
@@ -241,7 +250,7 @@ def main() -> int:
     if is_test:
         with output() as stream:
             for _ in range(n_loops):
-                render_loop(stream, rhythms, random.choice(config.progressions), bass, synth, drum_midi, drumrack, messages)
+                render_loop(stream, rhythms, (random_progression(), Scale.from_name('C', 'major')), bass, synth, drum_midi, drumrack, messages)
         return 0
 
     while True:

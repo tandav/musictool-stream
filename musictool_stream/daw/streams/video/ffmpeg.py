@@ -75,9 +75,9 @@ def make_process(output):
         # '-blocksize', '2048',
         # '-flush_packets', '1',
 
-        '-f', 'flv',
-        '-flvflags', 'no_duration_filesize',
-        # '-f', 'mp4',
+        # '-f', 'flv',
+        # '-flvflags', 'no_duration_filesize',
+        '-f', 'mp4',
 
         output,
     )

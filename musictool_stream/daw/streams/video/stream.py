@@ -106,7 +106,7 @@ class Video(Stream):
         os.unlink(config.audio_pipe)
         os.unlink(config.video_pipe)
 
-        assert self.frames_written == int(self.audio_seconds_written * config.fps)
+        # assert self.frames_written == int(self.audio_seconds_written * config.fps)
         print(self.frames_written, self.audio_seconds_written, int(self.audio_seconds_written * config.fps))
 
     # def make_frames(self, n_frames, px_width, len_data):
