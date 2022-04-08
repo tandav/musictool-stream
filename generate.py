@@ -1,13 +1,9 @@
-import subprocess
-import shlex
-import random
 from pathlib import Path
 
 import datetime
 import itertools
 import random
-import sys
-from collections import deque
+import pipe21 as P
 
 import mido
 from musictool.note import SpecificNote
@@ -16,13 +12,11 @@ from musictool.rhythm import Rhythm
 from musictool.scale import Scale
 from musictool.progression import Progression
 from musictool.chord import SpecificChord
+from musictool.util.sequence_builder import SequenceBuilder
 
 from musictool_stream import config
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
-from musictool_stream.daw.streams.pcmfile import PCM16File
-from musictool_stream.daw.streams.speakers import Speakers
 from musictool_stream.daw.streams.video.stream import Video
-from musictool_stream.daw.streams.wavfile import WavFile
 from musictool_stream.daw.vst.adsr import ADSR
 from musictool_stream.daw.vst.organ import Organ
 from musictool_stream.daw.vst.sampler import Sampler
@@ -30,11 +24,39 @@ from musictool_stream.daw.vst.sine import Sine8
 from musictool_stream.util.text import ago
 
 
-def random_progression():
-    return Progression(tuple(
-        SpecificChord(frozenset(random.sample(config.note_range, config.n_notes)))
-        for _ in range(4)
-    ))
+def leap_constraint(a: SpecificChord, b: SpecificChord) -> bool:
+    """
+    >>> not leap_constraint(SpecificChord.from_str('F1_A1'), SpecificChord.from_str('D2_B2'))
+    True
+    >>> leap_constraint(SpecificChord.from_str('F1_A1'), SpecificChord.from_str('C2_B2'))
+    True
+    """
+    if (
+        (a[0] > b[-1] and config.scale.subtract(a[0],  b[-1]) > 2) or
+        (a[-1] < b[0] and config.scale.subtract(b[0],  a[-1]) > 2)
+    ):
+        return False
+    return True
+
+
+def random_chord(n_notes: int = 2):
+    return SpecificChord(frozenset(random.sample(config.note_range, n_notes)))
+
+
+def find_chord(prev_chord: SpecificChord):
+    while True:
+        chord = random_chord()
+        if leap_constraint(prev_chord, chord):
+            return chord
+
+
+def random_progression_generator(n_chords: int = 4):
+    while True:
+        p = [random_chord()]
+        for _ in range(n_chords - 1):
+            p.append(find_chord(p[-1]))
+        yield Progression(tuple(p))
+
 
 def make_rhythms():
     _ = (Rhythm.all_rhythms(n_notes) for n_notes in range(5, 8 + 1))
@@ -44,7 +66,6 @@ def make_rhythms():
 
 def render_loop(stream, rhythms, progression, bass, synth, drum_midi, drumrack, messages):
     progression, scale = progression
-    # rhythm = random.choice(rhythms)
 
     bass_midi = []
     chord_midi = []
@@ -128,54 +149,26 @@ def delete_extra(max_files: int = 1000):
 
 
 def main():
-
-
-    # note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8), noteset=Scale.from_name('C', 'major'))
-    # note_range = NoteRange(note_range[0] + -24, note_range[-1])
-    # config.note_range = note_range
-
     rhythms = make_rhythms()
     drum_midi = ParsedMidi.hstack([mido.MidiFile(config.midi_folder + 'drumloop-with-closed-hat.mid')] * config.bars_per_screen)
     bass = Organ(adsr=ADSR(attack=0.001, decay=0.15, sustain=0, release=0.1), amplitude=0.05, transpose=-12)
     drumrack = Sampler()
     synth = Sine8(adsr=ADSR(attack=0.05, decay=0.1, sustain=1, release=0.1), amplitude=0.003, transpose=-24)
-
     messages = open('static/messages.txt').read().splitlines()
+
+    config.scale = Scale.from_name('C', 'major')
+    generator = random_progression_generator()
 
     while True:
         # todo: cleanup
         config.note_range = NoteRange(SpecificNote('C', 6), SpecificNote('C', 8), noteset=Scale.from_name('C', 'major'))
-        progression = random_progression()
+        progression = next(generator)
         config.note_range = NoteRange(config.note_range[0] + -36, config.note_range[-1])
 
         config.OUTPUT_VIDEO = f"static/{'-'.join(map(str, progression))}.mp4"
         with Video() as stream:
-            render_loop(stream, rhythms, (progression, Scale.from_name('C', 'major')), bass, synth, drum_midi, drumrack, messages)
+            render_loop(stream, rhythms, (progression, config.scale), bass, synth, drum_midi, drumrack, messages)
         delete_extra()
 
 if __name__ == '__main__':
     raise SystemExit(main())
-
-
-
-# def creeate_and_upload():
-#     cmd = 'python -m musictool_stream.daw video_file 1'
-#     subprocess.check_call(shlex.split(cmd))
-#     cmd = 'mv *.mp4 static'
-#     subprocess.check_call(cmd, shell=True)
-#
-#
-# def delete_extra(max_files: int = 1000):
-#     videos = get_videos()
-#     print(len(videos))
-#     if len(videos) <= max_files:
-#         return
-#     n_extra = len(videos) - max_files
-#     rm_videos = random.sample(videos, n_extra)
-#     for v in rm_videos:
-#         print('rm', v)
-#         v.unlink()
-#
-# while True:
-#     creeate_and_upload()
-#     delete_extra()
