@@ -39,8 +39,19 @@ def leap_constraint(a: SpecificChord, b: SpecificChord) -> bool:
     return True
 
 
+def different_notes(chord: SpecificChord) -> bool:
+    """
+    this is only for n_notes=2 chords
+    if you will add more add you can release this constraint
+    """
+    return len(chord.abstract) > 1
+
+
 def random_chord(n_notes: int = 2):
-    return SpecificChord(frozenset(random.sample(config.note_range, n_notes)))
+    while True:
+        chord = SpecificChord(frozenset(random.sample(config.note_range, n_notes)))
+        if different_notes(chord):
+            return chord
 
 
 def find_chord(prev_chord: SpecificChord):
