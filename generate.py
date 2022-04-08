@@ -84,7 +84,7 @@ def render_loop(stream, rhythms, progression, bass, synth, drum_midi, drumrack, 
     # config.tuning = random.randint(*config.RANDOM_TUNING_RANGE) if random.random() < 0.15 else config.DEFAULT_TUNING
 
     drumrack.note_mute = {
-        SpecificNote('C', 3): random.random() < 0.1,
+        SpecificNote('C', 3): True,
         SpecificNote('e', 3): random.random() < 0.1,
         SpecificNote('b', 3): random.random() < 0.1,
         SpecificNote('f', 3): random.random() < 0.5,
