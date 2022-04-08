@@ -130,9 +130,9 @@ def delete_extra(max_files: int = 1000):
 def main():
 
 
-    note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8), noteset=Scale.from_name('C', 'major'))
-    note_range = NoteRange(note_range[0] + -24, note_range[-1])
-    config.note_range = note_range
+    # note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8), noteset=Scale.from_name('C', 'major'))
+    # note_range = NoteRange(note_range[0] + -24, note_range[-1])
+    # config.note_range = note_range
 
     rhythms = make_rhythms()
     drum_midi = ParsedMidi.hstack([mido.MidiFile(config.midi_folder + 'drumloop-with-closed-hat.mid')] * config.bars_per_screen)
@@ -144,9 +144,9 @@ def main():
 
     while True:
         # todo: cleanup
-        config.note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8), noteset=Scale.from_name('C', 'major'))
+        config.note_range = NoteRange(SpecificNote('C', 6), SpecificNote('C', 8), noteset=Scale.from_name('C', 'major'))
         progression = random_progression()
-        config.note_range = NoteRange(config.note_range[0] + -24, config.note_range[-1])
+        config.note_range = NoteRange(config.note_range[0] + -36, config.note_range[-1])
 
         config.OUTPUT_VIDEO = f"static/{'-'.join(map(str, progression))}.mp4"
         with Video() as stream:
