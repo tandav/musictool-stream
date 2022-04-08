@@ -29,13 +29,20 @@ from musictool_stream.util.text import ago
 
 # memory = joblib.Memory('static/cache', verbose=0)
 
+
+
 def random_progression():
-    return Progression((
-        SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
-        SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
-        SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
-        SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+    # return Progression((
+    #     SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+    #     SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+    #     SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+    #     SpecificChord.random(n_notes=config.n_notes, octaves=(5, 6, 7)),
+    # ))
+    return Progression(tuple(
+        SpecificChord(frozenset(random.sample(config.note_range, config.n_notes)))
+        for _ in range(4)
     ))
+
 
 # @memory.cache
 def make_rhythms():
@@ -73,7 +80,8 @@ def render_loop(stream, rhythms, progression, bass, synth, drum_midi, drumrack, 
         SpecificNote('f', 3): random.random() < 0.5,
     }
 
-    bass.mute = random.random() < 0.03
+    # bass.mute = random.random() < 0.03
+    bass.mute = True
 
     bass_rhythm0 = random.choice(rhythms)
     bassline_str = f'bassline {bass_rhythm0.bits}'
@@ -142,18 +150,6 @@ def render_loop(stream, rhythms, progression, bass, synth, drum_midi, drumrack, 
 
 
 def main() -> int:
-    # todo: argparse
-    # parser = argparse.ArgumentParser(description='Run streaming, pass output stream')
-    # parser.add_argument('--output', action='store_const', const=streams.Speakers , default=streams.Speakers)
-    # parser.add_argument('--speakers', dest='output_stream', action='store_const', const=streams.Speakers , help='stream to speakers')
-    # parser.add_argument('--youtube' , dest='output_stream', action='store_const', const=streams.YouTube  , help='stream to youtube')
-    # parser.add_argument('--wav'     , dest='output_stream', action='store_const', const=streams.WavFile  , help='save to wave/riff file')
-    # parser.add_argument('--pcm'     , dest='output_stream', action='store_const', const=streams.PCM16File, help='save to pcm16 file')
-    # args = parser.parse_args()
-    # print(args, args.output_stream)
-    # print(args)
-    # raise
-
     is_test = False
     if len(sys.argv) == 1:
         output = Speakers
@@ -169,7 +165,6 @@ def main() -> int:
             n_loops = 2
         elif sys.argv[1] == 'video_file':
             output = Video
-            config.OUTPUT_VIDEO = f"{'-'.join(map(str, random_progression()))}.mp4"
             is_test = True
             n_loops = int(sys.argv[2]) if len(sys.argv) == 3 else 4
         elif sys.argv[1] == 'video':
@@ -199,7 +194,10 @@ def main() -> int:
     # config.note_range = note_range(SpecificNote('C', 3), SpecificNote('C', 6))
     # config.note_range = note_range(SpecificNote('C', 4), SpecificNote('C', 7))
 
-    config.note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8))
+    config.note_range = NoteRange(SpecificNote('C', 5), SpecificNote('C', 8), noteset=Scale.from_name('C', 'major'))
+    progression = random_progression()
+    config.OUTPUT_VIDEO = f"{'-'.join(map(str, progression))}.mp4"
+
     rhythms = make_rhythms()
     # config.progressions = make_progressions(scale=Scale.from_name('C', 'major'))
     config.progressions_queue = deque()
@@ -250,7 +248,7 @@ def main() -> int:
     if is_test:
         with output() as stream:
             for _ in range(n_loops):
-                render_loop(stream, rhythms, (random_progression(), Scale.from_name('C', 'major')), bass, synth, drum_midi, drumrack, messages)
+                render_loop(stream, rhythms, (progression, Scale.from_name('C', 'major')), bass, synth, drum_midi, drumrack, messages)
         return 0
 
     while True:

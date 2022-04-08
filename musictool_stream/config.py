@@ -111,4 +111,4 @@ ui_thread = None
 # MIDI_UI_FILE = 'static/midi/vespers-04.mid'
 # MIDI_UI_FILE = 'static/midi/vivaldi-winter.mid'
 
-n_notes = 3
+n_notes = 2
