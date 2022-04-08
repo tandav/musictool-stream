@@ -30,6 +30,7 @@ test:
 
 .PHONY: build_push_base
 build_push_base:
+	# docker buildx build --no-cache
 	docker buildx build --platform linux/arm64/v8,linux/amd64 --tag tandav/musictool-stream-base --file docker/base --push .
 #	docker build --tag tandav/musictool-stream-base --file docker/base .
 	#docker push tandav/musictool-stream-base
