@@ -60,4 +60,4 @@ help: ## Display this help
 
 .PHONY: generate
 generate:
-	docker run --rm -it -v $$PWD:/app -v /home/ubuntu/musictool-labeling/static:/app/static --workdir /app tandav/musictool-stream-base python:3 generate.py
+	docker run --rm -it -v $$PWD:/app -v /home/ubuntu/musictool-labeling/static:/app/static --workdir /app tandav/musictool-stream-base python generate.py
