@@ -24,6 +24,8 @@ from musictool_stream.daw.vst.sine import Sine8
 from musictool_stream.util.text import ago
 
 
+requested = []
+
 def leap_constraint(a: SpecificChord, b: SpecificChord) -> bool:
     """
     >>> not leap_constraint(SpecificChord.from_str('F1_A1'), SpecificChord.from_str('D2_B2'))
@@ -63,6 +65,9 @@ def find_chord(prev_chord: SpecificChord):
 
 def random_progression_generator(n_chords: int = 4):
     while True:
+        if requested:
+            yield from requested
+            continue
         p = [random_chord()]
         for _ in range(n_chords - 1):
             p.append(find_chord(p[-1]))
@@ -159,6 +164,8 @@ def delete_extra(max_files: int = 1000):
         v.unlink()
 
 
+TODO_PATH = Path('todo.txt')
+
 def main():
     rhythms = make_rhythms()
     drum_midi = ParsedMidi.hstack([mido.MidiFile(config.midi_folder + 'drumloop-with-closed-hat.mid')] * config.bars_per_screen)
@@ -172,8 +179,17 @@ def main():
 
     while True:
         # todo: cleanup
+
+
         config.note_range = NoteRange(SpecificNote('C', 6), SpecificNote('C', 8), noteset=Scale.from_name('C', 'major'))
+
+        if TODO_PATH.exists():
+            for line in TODO_PATH.read_text().splitlines():
+                requested.append(Progression(tuple(SpecificChord.from_str(s) for s in line.split(','))))
+            with open(TODO_PATH, 'w') as f: ...
+
         progression = next(generator)
+
         config.note_range = NoteRange(config.note_range[0] + -36, config.note_range[-1])
 
         config.OUTPUT_VIDEO = f"static/{'-'.join(map(str, progression))}.mp4"
