@@ -5,7 +5,7 @@ import operator
 import pipe21 as P
 from musictool.chord import SpecificChord
 from musictool.note import SpecificNote
-from musictool.noteset import NoteRange
+from musictool.noterange import NoteRange
 from musictool.progression import Progression
 from musictool.scale import Scale
 from musictool.util.sequence_builder import SequenceBuilder

@@ -1,12 +1,12 @@
 import sys
 import threading
 
+import colortool
 import cv2
 import numpy as np
 from musictool.config import BLACK_PALE
 from musictool.config import WHITE_BRIGHT
 from musictool.config import scale_colors
-from musictool.util import color as colorutil
 
 from musictool_stream import config
 from musictool_stream.util import image as imageutil
@@ -92,8 +92,8 @@ class VideoRender(threading.Thread):
         chord_px_int = int(config.chord_px)
         for y, chord in zip(range(0, config.frame_height, chord_px_int), track.meta['progression']):
             # background_color = track.meta['scale'].note_colors[chord.root]
-            # background_color = colorutil.hex_to_rgb(scale_colors['major'])
-            background_color = colorutil.hex_to_rgb(scale_colors[track.meta['scale'].note_scales[chord.root]])
+            # background_color = colortool.hex_to_rgb(scale_colors['major'])
+            background_color = colortool.hex_to_rgb(scale_colors[track.meta['scale'].note_scales[chord.root]])
             cv2.rectangle(chord_rects, pt1=(0, y), pt2=(config.frame_width, y + chord_px_int), color=background_color, thickness=cv2.FILLED)
 
         self.bg = imageutil.overlay_image(bg, chord_rects, alpha=0.3)

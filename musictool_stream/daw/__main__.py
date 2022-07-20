@@ -8,7 +8,7 @@ from collections import deque
 # import joblib
 import mido
 from musictool.note import SpecificNote
-from musictool.noteset import NoteRange
+from musictool.noterange import NoteRange
 from musictool.rhythm import Rhythm
 from musictool.scale import Scale
 

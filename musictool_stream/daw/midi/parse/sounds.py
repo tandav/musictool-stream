@@ -3,9 +3,9 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import get_args
 
+import colortool
 import mido
 from musictool.config import scale_colors
-from musictool.util import color as colorutil
 
 from musictool_stream import config
 from musictool_stream.daw.midi.notesound import NoteSound
@@ -80,7 +80,7 @@ class ParsedMidi:
                     # color = meta['scales']
                     # self.note_colors[note] = hex_to_rgb(config.scale_colors[scale])
                     # color = meta['scale'].note_colors[message.text]  # chord root
-                    color = colorutil.hex_to_rgb(scale_colors[meta['scale'].name])
+                    color = colortool.hex_to_rgb(scale_colors[meta['scale'].name])
                 elif message.type == 'track_name':
                     trackname = message.name
             # rounded = self.round_ticks_to_bar(ticks, ticks_per_bar)
@@ -120,7 +120,7 @@ class ParsedMidi:
             if note.trackname == 'bass' or note.trackname == 'drumrack':
                 note.smooth_rendering = False
             if note.trackname == 'drumrack' or note.trackname == 'bass':
-                note.color = colorutil.random_rgb()
+                note.color = colortool.random_rgb()
 
         # self.note_colors = {note: util.random_rgba() for note in self.notes}
         self.reset(reset_notes=False)
