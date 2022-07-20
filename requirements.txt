@@ -4,3 +4,4 @@ musictool==1.1.47
 numpy==1.22.2
 opencv-python==4.5.5.62
 pipe21==1.0.9
+tqdm==4.63.0
