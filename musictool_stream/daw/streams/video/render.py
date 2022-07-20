@@ -92,9 +92,9 @@ class VideoRender(threading.Thread):
         chord_px_int = int(config.chord_px)
         for y, chord in zip(range(0, config.frame_height, chord_px_int), track.meta['progression']):
             # background_color = track.meta['scale'].note_colors[chord.root]
+            # background_color = colorutil.hex_to_rgb(scale_colors['major'])
             background_color = colorutil.hex_to_rgb(scale_colors[track.meta['scale'].note_scales[chord.root]])
             cv2.rectangle(chord_rects, pt1=(0, y), pt2=(config.frame_width, y + chord_px_int), color=background_color, thickness=cv2.FILLED)
-            cv2.putText(chord_rects, f"{chord.root.name} {chord.abstract.name} | {track.meta['scale'].note_scales[chord.root]}", (imageutil.rel_to_abs_w(0.82), (y + imageutil.rel_to_abs_h(0.01))), font, fontScale=1, color=(210, 210, 210), thickness=2, lineType=cv2.LINE_AA, bottomLeftOrigin=True)
 
         self.bg = imageutil.overlay_image(bg, chord_rects, alpha=0.3)
 
@@ -264,7 +264,6 @@ class VideoRender(threading.Thread):
         cv2.putText(im, f'keyframe_seconds {config.keyframe_seconds}', imageutil.rel_to_abs(0, 0.46), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
         cv2.putText(im, f'quality {config.frame_height}p', imageutil.rel_to_abs(0, 0.49), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
 
-        cv2.putText(im, f"{chord.root.name} {chord.abstract.name} | {track.meta['scale'].note_scales[chord.root]}", (imageutil.rel_to_abs_w(0.82), config.frame_height - (chord_start_px + imageutil.rel_to_abs_h(0.01))), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
 
         if not track.meta['muted']['closed_hat']:
             for _ in range(2):

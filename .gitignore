@@ -1,3 +1,5 @@
 .venv*
 credentials.py
 _archive
+__pycache__
+static/*.mp4
