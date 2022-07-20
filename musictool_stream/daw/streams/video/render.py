@@ -104,7 +104,7 @@ class VideoRender(threading.Thread):
         # self.bg = image.overlay_rect(self.bg, pt1=(x, 0), pt2=(x + key_width, config.frame_height), color=(0, 0, 0), alpha=0.5)
         # self.bg = image.overlay_rect(self.bg, pt1=(x, 0), pt2=(x + key_width, config.frame_height), color=(0, 0, 0), alpha=0.5)
 
-        self.note_to_x = dict()
+        self.note_to_x = {}
         for x, note in zip(range(0, config.frame_width, self.key_width), config.note_range):
             self.note_to_x[note] = x
             if note.is_black:
@@ -263,7 +263,6 @@ class VideoRender(threading.Thread):
         cv2.putText(im, f'GOP {config.gop}', imageutil.rel_to_abs(0, 0.43), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
         cv2.putText(im, f'keyframe_seconds {config.keyframe_seconds}', imageutil.rel_to_abs(0, 0.46), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
         cv2.putText(im, f'quality {config.frame_height}p', imageutil.rel_to_abs(0, 0.49), font, fontScale=1, color=WHITE_BRIGHT, thickness=2, lineType=cv2.LINE_AA)
-
 
         if not track.meta['muted']['closed_hat']:
             for _ in range(2):

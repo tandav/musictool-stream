@@ -1,4 +1,3 @@
-
 default_octave = 5
 # DEFAULT_TUNING = 440  # default A hz tuning
 DEFAULT_TUNING = 500

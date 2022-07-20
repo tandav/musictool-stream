@@ -38,10 +38,10 @@ class Sampler(VST):
     def __init__(
         self,
         note_to_sample_path: Iterable[tuple[SpecificNote, str | Path]] = DEFAULT_NOTE_TO_SAMPLE_PATH,
-        adsr: ADSR | dict[SpecificNote, ADSR] = DEFAULT_NOTE_TO_ADSR
+        adsr: ADSR | dict[SpecificNote, ADSR] = DEFAULT_NOTE_TO_ADSR,
     ):
         super().__init__(adsr)
-        self.note_to_sample = dict()
+        self.note_to_sample = {}
         for note, sample_path in note_to_sample_path:
             self.note_to_sample[note] = self.load_sample(sample_path)
         self.note_to_amplitude = Sampler.DEFAULT_NOTE_TO_AMPLITUDE
@@ -59,7 +59,8 @@ class Sampler(VST):
             raise ValueError(f'Sample {sample_path} should be in float32 format')
         if sample_rate != config.sample_rate:
             raise NotImplementedError(
-                f'resampling is not supported yet, please save sample {sample_path} with sample rate {config.sample_rate}')
+                f'resampling is not supported yet, please save sample {sample_path} with sample rate {config.sample_rate}',
+            )
         return sample
 
     def _call(self, ns_rendered: int, ns_to_render: int, note: SpecificNote):

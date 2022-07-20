@@ -5,11 +5,13 @@ from musictool_stream import config
 from musictool_stream.daw.midi.parse.sounds import ParsedMidi
 
 
-@pytest.mark.parametrize('midi_file', (
-    '4-4-16.mid',  # 1 bar
-    '3-4-16.mid',  # 1 bar
-    '4-4-kick.mid',  # 1 bar
-))
+@pytest.mark.parametrize(
+    'midi_file', (
+        '4-4-16.mid',  # 1 bar
+        '3-4-16.mid',  # 1 bar
+        '4-4-kick.mid',  # 1 bar
+    ),
+)
 def test_time_signature(midi_file, vst):
     m = mido.MidiFile(config.midi_folder + midi_file)
     track = ParsedMidi.from_file(midi_file, vst)
@@ -20,11 +22,13 @@ def test_time_signature(midi_file, vst):
     assert track.n_samples == int(sample_rate * seconds)
 
 
-@pytest.mark.parametrize('midi_file', (
-    '4-4-16.mid',
-    '3-4-16.mid',
-    'weird.mid',
-))
+@pytest.mark.parametrize(
+    'midi_file', (
+        '4-4-16.mid',
+        '3-4-16.mid',
+        'weird.mid',
+    ),
+)
 def test_note_samples(midi_file, vst):
     track = ParsedMidi.from_file(midi_file, vst)
     for note in track.notes:

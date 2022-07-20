@@ -28,7 +28,7 @@ class ParsedMidi:
         :param meta: extra meta information to store
         :return:
         """
-        ticks_info = dict()
+        ticks_info = {}
         notes = []
         numerator = None
 
@@ -43,9 +43,9 @@ class ParsedMidi:
 
         for i, (track, vst_, name) in enumerate(zip(midi.tracks, vst, tracknames)):
             ticks, seconds, n_samples, n_frames = 0, 0., 0, 0
-            note_buffer_samples = dict()
-            note_buffer_seconds = dict()
-            note_buffer_frames = dict()
+            note_buffer_samples = {}
+            note_buffer_seconds = {}
+            note_buffer_frames = {}
             for message in track:
                 ticks += message.time
 
@@ -65,15 +65,17 @@ class ParsedMidi:
                     note_buffer_seconds[message.note] = seconds
                     note_buffer_frames[message.note] = n_frames
                 elif message.type == 'note_off':
-                    notes.append(NoteSound(
-                        message.note,
-                        vst_,
-                        note_buffer_samples.pop(message.note), n_samples,
-                        note_buffer_seconds.pop(message.note), seconds,
-                        note_buffer_frames.pop(message.note), n_frames,
-                        color=color,
-                        trackname=trackname,
-                    ))
+                    notes.append(
+                        NoteSound(
+                            message.note,
+                            vst_,
+                            note_buffer_samples.pop(message.note), n_samples,
+                            note_buffer_seconds.pop(message.note), seconds,
+                            note_buffer_frames.pop(message.note), n_frames,
+                            color=color,
+                            trackname=trackname,
+                        ),
+                    )
                 elif message.type == 'marker' and meta is not None:
                     # color = meta['scales']
                     # self.note_colors[note] = hex_to_rgb(config.scale_colors[scale])
@@ -179,7 +181,7 @@ class ParsedMidi:
         midi = mido.MidiFile(type=1)
 
         numerators, denominators = set(), set()
-        ticks_per_beat_s = dict()
+        ticks_per_beat_s = {}
 
         for i, (track_midi, trackname) in enumerate(zip(midi_objects, tracknames)):
             # print(f)
@@ -237,7 +239,7 @@ class ParsedMidi:
         time_signature = mido.MetaMessage(type='time_signature', numerator=4, denominator=4, clocks_per_click=36)
         track.append(time_signature)
 
-        # time_signatures = dict()
+        # time_signatures = {}
         ticks_per_beat_set = set()
 
         for i, midi in enumerate(midi_objects):

@@ -19,7 +19,7 @@ jobs:
         run: python3 -m pip install -r requirements-dev.txt
 
       - name: lint
-        run: make lint
+        run: make check-lint
 
       - name: test
         run: make test

@@ -12,16 +12,18 @@ from musictool_stream.daw.vst.sampler import Sampler
 from musictool_stream.daw.vst.sine import Sine
 
 
-@pytest.mark.parametrize('midi_file', (
-    'overlap.mid',
-    'bassline.mid',
-    '4-4-8.mid',
-    '3-4-16.mid',
-    '4-4-16.mid',
-    'chord.mid',
-    'weird.mid',
-    'drumloop.mid',
-))
+@pytest.mark.parametrize(
+    'midi_file', (
+        'overlap.mid',
+        'bassline.mid',
+        '4-4-8.mid',
+        '3-4-16.mid',
+        '4-4-16.mid',
+        'chord.mid',
+        'weird.mid',
+        'drumloop.mid',
+    ),
+)
 class TestRender:
     """
     sharing common parameters/arguments

@@ -1,3 +1,5 @@
+LINTING_DIRS := musictool_stream tests
+
 .PHONY: stream_docker
 stream_docker:
 	docker run --pull=always --rm -it -v $$PWD/credentials.py:/app/credentials.py tandav/musictool-stream
@@ -10,15 +12,20 @@ stream:
 test_video:
 	python -m musictool_stream.daw video_test
 
-.PHONY: lint
-lint:
-	python -m no_init musictool_stream tests
-	python -m force_absolute_imports musictool_stream tests
-	python -m isort --force-single-line-imports musictool_stream tests
+.PHONY: fix-lint
+fix-lint:
 	python -m autoflake --recursive --in-place musictool_stream tests
-	python -m autopep8 --in-place --recursive --aggressive --ignore=E221,E401,E402,E501,W503,E701,E704,E721,E741,I100,I201,W504 --exclude=musictool_stream/util/wavfile.py musictool_stream tests
-	python -m unify --recursive --in-place musictool_stream tests
-	python -m flake8 --ignore=E221,E501,W503,E701,E704,E741,I100,I201,W504 --exclude=musictool_stream/util/wavfile.py musictool_stream tests
+
+.PHONY: check-lint
+check-lint:
+	#$(python) -m no_init --allow-empty $(LINTING_DIRS)
+	$(python) -m force_absolute_imports $(LINTING_DIRS)
+	$(python) -m isort --check-only $(LINTING_DIRS)
+	$(python) -m autoflake --recursive $(LINTING_DIRS)
+	$(python) -m autopep8 --diff $(LINTING_DIRS)
+	$(python) -m flake8 $(LINTING_DIRS)
+	#$(python) -m darglint --docstring-style numpy --verbosity 2 $(LINTING_DIRS)
+
 
 .PHONY: messages
 messages:

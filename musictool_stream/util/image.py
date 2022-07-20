@@ -27,7 +27,7 @@ def overlay_rect(
     return im
 
 
-def overlay_image(im: np.ndarray, overlay: np.ndarray, alpha: float,) -> np.ndarray:
+def overlay_image(im: np.ndarray, overlay: np.ndarray, alpha: float) -> np.ndarray:
     return cv2.addWeighted(overlay, alpha, im, 1 - alpha, gamma=0)
 
 

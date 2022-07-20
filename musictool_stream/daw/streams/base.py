@@ -37,7 +37,7 @@ class Stream(AbstractContextManager):
             self.n = n
             chunk_size = min(config.chunk_size, track.n_samples - n)
             self.master[:chunk_size] = 0.
-            track.playing_notes |= set(note for note in notes if n <= note.sample_on < n + config.chunk_size)
+            track.playing_notes |= {note for note in notes if n <= note.sample_on < n + config.chunk_size}
             track.done_notes = set()
             for note in track.playing_notes | track.releasing_notes:
                 note.render(self.master[:chunk_size], samples=np.arange(n, n + chunk_size))

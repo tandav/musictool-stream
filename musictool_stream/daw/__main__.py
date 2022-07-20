@@ -105,31 +105,33 @@ def render_loop(stream, rhythms, progression, bass, synth, drum_midi, drumrack, 
     timestamp = int(timestamp)
     ago_ = ago(datetime.datetime.now().timestamp() - timestamp)
     sha, message = rest.split(maxsplit=1)
-    stream.render_chunked(ParsedMidi.vstack(
-        [drum_midi, bass_midi, chord_midi],
-        [drumrack, bass, synth],
-        ['drumrack', 'bass', 'synth'],
-        meta={
-            'muted': {
-                'kick': drumrack.note_mute[SpecificNote('C', 3)],
-                'clap': drumrack.note_mute[SpecificNote('e', 3)],
-                'open_hat': drumrack.note_mute[SpecificNote('b', 3)],
-                'closed_hat': drumrack.note_mute[SpecificNote('f', 3)],
-                'bassline': bass.mute,
+    stream.render_chunked(
+        ParsedMidi.vstack(
+            [drum_midi, bass_midi, chord_midi],
+            [drumrack, bass, synth],
+            ['drumrack', 'bass', 'synth'],
+            meta={
+                'muted': {
+                    'kick': drumrack.note_mute[SpecificNote('C', 3)],
+                    'clap': drumrack.note_mute[SpecificNote('e', 3)],
+                    'open_hat': drumrack.note_mute[SpecificNote('b', 3)],
+                    'closed_hat': drumrack.note_mute[SpecificNote('f', 3)],
+                    'bassline': bass.mute,
+                },
+                'message': f'{sha} | {ago_} | {message}',
+                # 'bassline': f'bassline {rhythm.bits}',
+                'bassline': bassline_str,
+                # 'rhythm_score': f'score{rhythm.score:.2f}',
+                'rhythm_score': rhythm_score_str,
+                'bass_decay': f'bass_decay{bass._adsr.decay:.2f}',
+                'tuning': f'tuning{config.tuning}Hz',
+                'root_scale': f'root scale: {scale.root.name} {scale.name}',
+                'progression': progression,
+                'dist': f'dist{progression.distance}',
+                'scale': scale,
             },
-            'message': f'{sha} | {ago_} | {message}',
-            # 'bassline': f'bassline {rhythm.bits}',
-            'bassline': bassline_str,
-            # 'rhythm_score': f'score{rhythm.score:.2f}',
-            'rhythm_score': rhythm_score_str,
-            'bass_decay': f'bass_decay{bass._adsr.decay:.2f}',
-            'tuning': f'tuning{config.tuning}Hz',
-            'root_scale': f'root scale: {scale.root.name} {scale.name}',
-            'progression': progression,
-            'dist': f'dist{progression.distance}',
-            'scale': scale,
-        },
-    ))
+        ),
+    )
 
 
 def main() -> int:
